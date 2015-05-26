@@ -20,6 +20,26 @@ func IsAuthorized(user user.User, action action.Action) Result {
 	if authorizeByUserActions.Final == true {
 		return authorizeByUserActions
 	}
+
+	authorizeByUserRoleActions := isAuthorizedByRoleActions(user, action)
+	if authorizeByUserRoleActions.Final == true {
+		return authorizeByUserRoleActions
+	}
+	return Result{false,false, false}
+}
+
+func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
+	for _,userRole := range user.Roles {
+		for _, RoleAction := range userRole.Actions {
+			if RoleAction.Description == action.Description{
+				if(RoleAction.Allowed == true) {
+					return Result{true,true, true}
+				}else{
+					return Result{true,true, false}
+				}
+			}
+		}
+	}
 	return Result{false,false, false}
 }
 
