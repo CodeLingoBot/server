@@ -16,23 +16,21 @@ type Result struct {
 }
 
 func IsAuthorized(user user.User, action action.Action) Result {
-	authorizeByUserActions := isAuthorizedByUserActions(user, action)
-	if authorizeByUserActions.Final == true {
-		return authorizeByUserActions
+	if byUserActions:= isAuthorizedByUserActions(user, action); byUserActions.Final {
+		return byUserActions
 	}
 
-	authorizeByUserRoleActions := isAuthorizedByRoleActions(user, action)
-	if authorizeByUserRoleActions.Final == true {
-		return authorizeByUserRoleActions
+	if byUserRoleActions := isAuthorizedByRoleActions(user, action); byUserRoleActions.Final {
+		return byUserRoleActions
 	}
 	return Result{false,false, false}
 }
 
+
 func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
 	for _,userRole := range user.Roles {
-		roleResult := isAuthorizedByActions(userRole.Actions, action, false)
-		if roleResult.Final == true {
-			return roleResult
+		if byRoleActions := isAuthorizedByActions(userRole.Actions, action, false); byRoleActions.Final{
+			return byRoleActions
 		}
 	}
 	return Result{false,false, false}
