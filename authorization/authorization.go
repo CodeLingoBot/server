@@ -6,49 +6,72 @@ import(
 )
 
 //Results of an authorization contain
-//Whether there was an association between this user and the action or an association between his roles and this action
-//Whether the decision was made by looking at actions of the user as oposed to actions of her roles
+//Whether action was associated with user in any way or not
+//Whether the decision was made by looking at actions of the user as opposed to actions of her roles
 //Whether the user is authorized or not
 type Result struct {
-	Final bool
+	Confident bool
 	UserLevelAction bool
-	Allowed bool
+	Authorized bool
 }
 
+var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Authorized:false}
+
 func IsAuthorized(user user.User, action action.Action) Result {
-	if byUserActions:= isAuthorizedByUserActions(user, action); byUserActions.Final {
+	if byUserActions:= isAuthorizedByUserLevelActions(user, action); byUserActions.Confident {
 		return byUserActions
 	}
 
-	if byUserRoleActions := isAuthorizedByRoleActions(user, action); byUserRoleActions.Final {
+	if byUserRoleActions := isAuthorizedByRoleActions(user, action); byUserRoleActions.Confident {
 		return byUserRoleActions
 	}
-	return Result{false,false, false}
+	return unconfidentDeny
 }
-
 
 func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
 	for _,userRole := range user.Roles {
-		if byRoleActions := isAuthorizedByActions(userRole.Actions, action, false); byRoleActions.Final{
-			return byRoleActions
+		if isActionDeniedByRoleActions(userRole.Actions, action) == true {
+			return Result{Confident:true,UserLevelAction:false, Authorized:false}
+		}
+
+		if isActionAllowedByRoleActions(userRole.Actions, action) == true {
+			return Result{Confident:true,UserLevelAction:false, Authorized:true}
 		}
 	}
-	return Result{false,false, false}
+	return unconfidentDeny
 }
 
-func isAuthorizedByUserActions(user user.User, action action.Action) Result{
+func isActionDeniedByRoleActions(actions []action.Action, action action.Action) bool{
+	for _, assignedAction := range actions {
+		if assignedAction.Description == action.Description && assignedAction.Authorized == false{
+				return true
+		}
+	}
+	return false;
+}
+
+func isActionAllowedByRoleActions(actions []action.Action, action action.Action) bool{
+	for _, assignedAction := range actions {
+		if assignedAction.Description == action.Description && assignedAction.Authorized == true{
+			return true
+		}
+	}
+	return false;
+}
+
+func isAuthorizedByUserLevelActions(user user.User, action action.Action) Result{
 	return isAuthorizedByActions(user.Actions, action, true)
 }
 
 func isAuthorizedByActions(actions []action.Action, action action.Action, UserLevelAction bool) Result{
-	for _, RoleAction := range actions {
-		if RoleAction.Description == action.Description{
-			if(RoleAction.Allowed == true) {
-				return Result{true,UserLevelAction, true}
+	for _, assignedAction := range actions {
+		if assignedAction.Description == action.Description{
+			if(assignedAction.Authorized == true) {
+				return Result{Confident:true,UserLevelAction:UserLevelAction, Authorized:true}
 			}else{
-				return Result{true,UserLevelAction, false}
+				return Result{Confident:true,UserLevelAction:UserLevelAction, Authorized:false}
 			}
 		}
 	}
-	return Result{false,UserLevelAction, false}
+	return Result{Confident:false,UserLevelAction:UserLevelAction,Authorized:false}
 }

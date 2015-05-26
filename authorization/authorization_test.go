@@ -80,3 +80,18 @@ func TestAllowOnRoleActionDeniesButUserActionAllows(t *testing.T) {
 		t.Error("User was not authorized on user action allows but role action denies", result)
 	}
 }
+
+func TestDenyByConflictingRoleActions(t *testing.T) {
+	user := user.User{}
+	role := role.Role{Name:"Dancer"}
+	allowAction := action.Action{"Dance", true}
+	denyAction := action.Action{"Dance", false}
+	role.AddAction(allowAction)
+	role.AddAction(denyAction)
+	user.AddRole(role)
+	result := authorization.IsAuthorized(user, denyAction)
+	expectedResult := authorization.Result{true,false, false}
+	if result != expectedResult {
+		t.Error("User was authorized on conflicting role actions", result)
+	}
+}
