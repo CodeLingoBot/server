@@ -29,14 +29,19 @@ func IsAuthorized(user user.User, action action.Action) Result {
 }
 
 func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
+
+	existsAuthorizingRole := false
 	for _,userRole := range user.Roles {
 		if isActionDeniedByRoleActions(userRole.Actions, action) == true {
 			return Result{Confident:true,UserLevelAction:false, Authorized:false}
 		}
 
 		if isActionAllowedByRoleActions(userRole.Actions, action) == true {
-			return Result{Confident:true,UserLevelAction:false, Authorized:true}
+			existsAuthorizingRole = true;
 		}
+	}
+	if existsAuthorizingRole {
+		return Result{Confident:true,UserLevelAction:false, Authorized:true}
 	}
 	return unconfidentDeny
 }
