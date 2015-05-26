@@ -6,8 +6,8 @@ import(
 )
 
 //Results of an authorization contain
-//Whether there was a conclusive decision that finalizes the decision
-//The action that was conclusive if any
+//Whether there was an association between this user and the action or an association between his roles and this action
+//Whether the decision was made by looking at actions of the user as oposed to actions of her roles
 //Whether the user is authorized or not
 type Result struct {
 	Final bool
@@ -30,28 +30,27 @@ func IsAuthorized(user user.User, action action.Action) Result {
 
 func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
 	for _,userRole := range user.Roles {
-		for _, RoleAction := range userRole.Actions {
-			if RoleAction.Description == action.Description{
-				if(RoleAction.Allowed == true) {
-					return Result{true,true, true}
-				}else{
-					return Result{true,true, false}
-				}
-			}
+		roleResult := isAuthorizedByActions(userRole.Actions, action, false)
+		if roleResult.Final == true {
+			return roleResult
 		}
 	}
 	return Result{false,false, false}
 }
 
 func isAuthorizedByUserActions(user user.User, action action.Action) Result{
-	for _,userAction := range user.Actions {
-		if userAction.Description == action.Description{
-			if(userAction.Allowed == true) {
-				return Result{true,true, true}
+	return isAuthorizedByActions(user.Actions, action, true)
+}
+
+func isAuthorizedByActions(actions []action.Action, action action.Action, UserLevelAction bool) Result{
+	for _, RoleAction := range actions {
+		if RoleAction.Description == action.Description{
+			if(RoleAction.Allowed == true) {
+				return Result{true,UserLevelAction, true}
 			}else{
-				return Result{true,true, false}
+				return Result{true,UserLevelAction, false}
 			}
 		}
 	}
-	return Result{false,false, false}
+	return Result{false,UserLevelAction, false}
 }
