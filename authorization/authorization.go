@@ -28,55 +28,41 @@ func IsAuthorized(user user.User, action action.Action) Result {
 	return unconfidentDeny
 }
 
-func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
+func isAuthorizedByUserLevelActions(user user.User, action action.Action) Result{
+	for _, assignedAction := range user.Actions {
+		if assignedAction.Description == action.Description{
+			if(assignedAction.Authorized == true) {
+				return Result{Confident:true,UserLevelAction:true, Authorized:true}
+			}else{
+				return Result{Confident:true,UserLevelAction:true, Authorized:false}
+			}
+		}
+	}
+	return Result{Confident:false,UserLevelAction:true,Authorized:false}
+}
 
-	existsAuthorizingRole := false
+func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
+	authorizingRoleActionExists := false
 	for _,userRole := range user.Roles {
-		if isActionDeniedByRoleActions(userRole.Actions, action) == true {
+		if searchActions(userRole.Actions, action, false) == true {
 			return Result{Confident:true,UserLevelAction:false, Authorized:false}
 		}
 
-		if isActionAllowedByRoleActions(userRole.Actions, action) == true {
-			existsAuthorizingRole = true;
+		if searchActions(userRole.Actions, action, true) == true {
+			authorizingRoleActionExists = true;
 		}
 	}
-	if existsAuthorizingRole {
+	if authorizingRoleActionExists {
 		return Result{Confident:true,UserLevelAction:false, Authorized:true}
 	}
 	return unconfidentDeny
 }
 
-func isActionDeniedByRoleActions(actions []action.Action, action action.Action) bool{
+func searchActions(actions []action.Action, action action.Action, expectedAuthorization bool) bool{
 	for _, assignedAction := range actions {
-		if assignedAction.Description == action.Description && assignedAction.Authorized == false{
+		if assignedAction.Description == action.Description && assignedAction.Authorized == expectedAuthorization{
 				return true
 		}
 	}
 	return false;
-}
-
-func isActionAllowedByRoleActions(actions []action.Action, action action.Action) bool{
-	for _, assignedAction := range actions {
-		if assignedAction.Description == action.Description && assignedAction.Authorized == true{
-			return true
-		}
-	}
-	return false;
-}
-
-func isAuthorizedByUserLevelActions(user user.User, action action.Action) Result{
-	return isAuthorizedByActions(user.Actions, action, true)
-}
-
-func isAuthorizedByActions(actions []action.Action, action action.Action, UserLevelAction bool) Result{
-	for _, assignedAction := range actions {
-		if assignedAction.Description == action.Description{
-			if(assignedAction.Authorized == true) {
-				return Result{Confident:true,UserLevelAction:UserLevelAction, Authorized:true}
-			}else{
-				return Result{Confident:true,UserLevelAction:UserLevelAction, Authorized:false}
-			}
-		}
-	}
-	return Result{Confident:false,UserLevelAction:UserLevelAction,Authorized:false}
 }
