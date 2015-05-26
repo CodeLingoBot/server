@@ -9,7 +9,7 @@ import (
 )
 
 func TestAuthorizeOnAllowedAction(t *testing.T) {
-	user := user.User{"John Smith",make([]action.Action,0), make([]role.Role,0)}
+	user := user.User{"John Smith", emptyActionsArray(), emptyRolesArray()}
 	action := action.Action{"Dance", true}
 	user.AddAction(action)
 	result := authorization.IsAuthorized(user, action)
@@ -19,7 +19,7 @@ func TestAuthorizeOnAllowedAction(t *testing.T) {
 }
 
 func TestAuthorizeNotAllowedAction(t *testing.T) {
-	user := user.User{"John Smith",make([]action.Action,0), make([]role.Role,0)}
+	user := user.User{"John Smith", emptyActionsArray(), emptyRolesArray()}
 	action := action.Action{"Dance", false}
 	user.AddAction(action)
 	result := authorization.IsAuthorized(user, action)
@@ -29,7 +29,7 @@ func TestAuthorizeNotAllowedAction(t *testing.T) {
 }
 
 func TestAuthorizeOnUnassociatedAction(t *testing.T) {
-	user := user.User{"John Smith",make([]action.Action,0), make([]role.Role,0)}
+	user := user.User{"John Smith", emptyActionsArray(), emptyRolesArray()}
 	action := action.Action{"Dance", true}
 	result := authorization.IsAuthorized(user, action)
 	if result.Allowed != false {
@@ -38,8 +38,8 @@ func TestAuthorizeOnUnassociatedAction(t *testing.T) {
 }
 
 func TestAuthorizeOnAllowedRoleAction(t *testing.T) {
-	user := user.User{"John Smith",make([]action.Action,0), make([]role.Role,0)}
-	role := role.Role{"Dancer", make([]action.Action,0)}
+	user := user.User{"John Smith", emptyActionsArray(),  emptyRolesArray()}
+	role := role.Role{"Dancer", emptyActionsArray()}
 	action := action.Action{"Dance", true}
 	role.AddAction(action)
 	user.AddRole(role)
@@ -47,4 +47,24 @@ func TestAuthorizeOnAllowedRoleAction(t *testing.T) {
 	if result.Allowed != true {
 		t.Error("User was not authorized on an authorized action to a user role", result)
 	}
+}
+
+func TestAuthorizeOnNotAllowedRoleAction(t *testing.T) {
+	user := user.User{"John Smith", emptyActionsArray(),  emptyRolesArray()}
+	role := role.Role{"Dancer", emptyActionsArray()}
+	action := action.Action{"Dance", false}
+	role.AddAction(action)
+	user.AddRole(role)
+	result := authorization.IsAuthorized(user, action)
+	if result.Allowed != false {
+		t.Error("User was not authorized on an unauthorized action to a user role", result)
+	}
+}
+
+func emptyActionsArray() []action.Action{
+	return make([]action.Action,0)
+}
+
+func emptyRolesArray() []role.Role{
+	return make([]role.Role,0)
 }
