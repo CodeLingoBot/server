@@ -1,6 +1,6 @@
 package action
 
 type Action struct {
-	Description string
+	Name string
 	Authorized bool
 }

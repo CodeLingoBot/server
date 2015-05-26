@@ -17,8 +17,8 @@ type Result struct {
 
 var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Authorized:false}
 
-func IsAuthorized(user user.User, action action.Action) Result {
-	if byUserActions:= isAuthorizedByUserLevelActions(user, action); byUserActions.Confident {
+func IsAuthorized(user user.User, action string) Result {
+	if byUserActions:= isAuthorizedByUserActions(user, action); byUserActions.Confident {
 		return byUserActions
 	}
 
@@ -28,9 +28,9 @@ func IsAuthorized(user user.User, action action.Action) Result {
 	return unconfidentDeny
 }
 
-func isAuthorizedByUserLevelActions(user user.User, action action.Action) Result{
+func isAuthorizedByUserActions(user user.User, action string) Result{
 	for _, assignedAction := range user.Actions {
-		if assignedAction.Description == action.Description{
+		if assignedAction.Name == action {
 			if(assignedAction.Authorized == true) {
 				return Result{Confident:true,UserLevelAction:true, Authorized:true}
 			}else{
@@ -41,7 +41,7 @@ func isAuthorizedByUserLevelActions(user user.User, action action.Action) Result
 	return Result{Confident:false,UserLevelAction:true,Authorized:false}
 }
 
-func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
+func isAuthorizedByRoleActions(user user.User,action string) Result{
 	authorizingRoleActionExists := false
 	for _,userRole := range user.Roles {
 		if searchActions(userRole.Actions, action, false) == true {
@@ -58,9 +58,9 @@ func isAuthorizedByRoleActions(user user.User, action action.Action) Result{
 	return unconfidentDeny
 }
 
-func searchActions(actions []action.Action, action action.Action, expectedAuthorization bool) bool{
+func searchActions(actions []action.Action, action string, expectedAuthorization bool) bool{
 	for _, assignedAction := range actions {
-		if assignedAction.Description == action.Description && assignedAction.Authorized == expectedAuthorization{
+		if assignedAction.Name == action && assignedAction.Authorized == expectedAuthorization{
 				return true
 		}
 	}
