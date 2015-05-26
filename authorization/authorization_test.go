@@ -7,21 +7,31 @@ import (
 	"awethome.com/action"
 )
 
-func TestAuthorizeOnAction(t *testing.T) {
+func TestAuthorizeOnAllowedAction(t *testing.T) {
 	user := user.User{"John Smith",make([]action.Action,0)}
 	action := action.Action{"Dance", true}
-	user.Authorize(action)
-	results := authorization.IsAuthorized(user, action)
-	if results != true {
-		t.Error("User was not authorized on an authorized action")
+	user.AddAction(action)
+	result := authorization.IsAuthorized(user, action)
+	if result.Allowed != true {
+		t.Error("User was not authorized on an authorized action", result)
+	}
+}
+
+func TestAuthorizeNotAllowedAction(t *testing.T) {
+	user := user.User{"John Smith",make([]action.Action,0)}
+	action := action.Action{"Dance", false}
+	user.AddAction(action)
+	result := authorization.IsAuthorized(user, action)
+	if result.Allowed != false {
+		t.Error("User was authorized on an unauthorized action", result)
 	}
 }
 
 func TestAuthorizeOnUnassociatedAction(t *testing.T) {
 	user := user.User{"John Smith",make([]action.Action,0)}
 	action := action.Action{"Dance", true}
-	results := authorization.IsAuthorized(user, action)
-	if results != false {
-		t.Error("User was authorized on an unassociated action")
+	result := authorization.IsAuthorized(user, action)
+	if result.Allowed != false {
+		t.Error("User was authorized on an unassociated action", result)
 	}
 }
