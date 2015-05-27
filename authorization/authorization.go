@@ -46,6 +46,7 @@ func IsAuthorized(request Request) Result {
 	return unconfidentDeny
 }
 
+//Is user authorized to perform an action on a resource based on User Resource Actions?
 func isAuthorizedByUserResourceActions(request Request) Result {
 	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true {
 		return Result{Confident:true, UserLevelAction:true, Authorized:true}
@@ -61,6 +62,7 @@ func isAuthorizedByUserResourceActions(request Request) Result {
 	return unconfidentDeny
 }
 
+//Is user authorized to perform an action on a resource based on User Role Resource Actions?
 func isAuthorizedByRoleResourceActions(request Request) Result {
 	authorizingRoleActionExists := false
 	for _, userRole := range request.User.Roles {
@@ -79,6 +81,7 @@ func isAuthorizedByRoleResourceActions(request Request) Result {
 	return unconfidentDeny
 }
 
+//Is user authorized to perform an action based on User Actions?
 func isAuthorizedByUserActions(request Request) Result {
 	for _, assignedAction := range request.User.Actions {
 		if assignedAction.Name == request.Action {
@@ -92,7 +95,7 @@ func isAuthorizedByUserActions(request Request) Result {
 	return unconfidentDeny
 }
 
-
+//Is user authorized to perform an action based on User Role Actions?
 func isAuthorizedByRoleActions(request Request) Result {
 	authorizingRoleActionExists := false
 	for _, userRole := range request.User.Roles {
