@@ -4,6 +4,7 @@ import (
 	"testing"
 	"awethome.com/action"
 	"awethome.com/role"
+	"awethome.com/resource"
 )
 
 func TestAddingActions(t *testing.T) {
@@ -18,5 +19,11 @@ func TestAddingActions(t *testing.T) {
 
 	if role.Actions["dance"].Authorized != false {
 		t.Error(`Adding an action twice didn't update the Actions`, role.Actions)
+	}
+
+	resource := resource.Resource{Name:`phone`}
+	role.AddResource(resource)
+	if role.Resources["phone"].Name != `phone` {
+		t.Error(`Adding a resource twice didn't update the Actions`, role.Resources)
 	}
 }

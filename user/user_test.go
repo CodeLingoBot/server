@@ -5,9 +5,10 @@ import (
 	"awethome.com/user"
 	"awethome.com/action"
 	"awethome.com/role"
+	"awethome.com/resource"
 )
 
-func TestAddingActionsAndRoles(t *testing.T) {
+func TestAddingActionsAndRolesResources(t *testing.T) {
 	user := user.User{}
 	allowAction := action.Action{Name:"dance",Authorized:true}
 	denyAction := action.Action{Name:"dance",Authorized:false}
@@ -25,11 +26,18 @@ func TestAddingActionsAndRoles(t *testing.T) {
 	user.AddRole(role)
 	user.AddRole(role)
 
-	if len(user.Actions) != 1 {
+	if len(user.Roles) != 1 {
 		t.Error(`Adding an action twice didn't work as expected`, user.Actions)
 	}
 
-	if user.Actions["dance"].Authorized != false {
+	if user.Roles["dancer"].Name != `dancer` {
 		t.Error(`Adding an action twice didn't update the Actions`, user.Actions)
 	}
+
+	resource := resource.Resource{Name:`phone`}
+	user.AddResource(resource)
+	if user.Resources["phone"].Name != `phone` {
+		t.Error(`Adding a resource twice didn't update the Actions`, user.Resources)
+	}
 }
+
