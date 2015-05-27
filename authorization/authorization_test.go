@@ -127,7 +127,7 @@ func TestTruthTableValuesForRolesAndUsers(t *testing.T){
 
 }
 
-func TestAllowingUserToPerformActionOnAResource(t *testing.T){
+func TestUserToPerformActionOnAResource(t *testing.T){
 	resource := resource.Resource{Name:`file`};
 	action1 := action.Action{Name:`edit`, Authorized:true}
 	action2 := action.Action{Name:`remove`, Authorized:false}
@@ -139,5 +139,35 @@ func TestAllowingUserToPerformActionOnAResource(t *testing.T){
 	expectedResult := authorization.Result{true,true, true}
 	if result != expectedResult {
 		t.Error(`User was not authorize on an authorized resource`, result)
+	}
+
+	result = authorization.IsAuthorized(authorization.Request{User:user, Action:`remove`,Resource:`file`})
+	expectedResult = authorization.Result{true,true, false}
+	if result != expectedResult {
+		t.Error(`User was authorized on an unauthorized resource`, result)
+	}
+}
+
+
+func TestAllowingRoleToPerformActionOnAResource(t *testing.T){
+	user := user.User{}
+	role := role.Role{}
+	resource := resource.Resource{Name:`directory`};
+	action1 := action.Action{Name:`edit`, Authorized:true}
+	action2 := action.Action{Name:`remove`, Authorized:false}
+	resource.AddAction(action1)
+	resource.AddAction(action2)
+	role.AddResource(resource)
+	user.AddRole(role)
+	result := authorization.IsAuthorized(authorization.Request{User:user, Action:`edit`,Resource:`directory`})
+	expectedResult := authorization.Result{true,false, true}
+	if result != expectedResult {
+		t.Error(`User was not authorize on an role level authorized resource`, result)
+	}
+
+	result = authorization.IsAuthorized(authorization.Request{User:user, Action:`remove`,Resource:`directory`})
+	expectedResult = authorization.Result{true,false, false}
+	if result != expectedResult {
+		t.Error(`User was authorized on a role level unauthorized resource`, result)
 	}
 }

@@ -47,15 +47,35 @@ func IsAuthorized(request Request) Result {
 }
 
 func isAuthorizedByUserResourceActions(request Request) Result{
- 	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true{
+	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true{
 		return Result{Confident:true,UserLevelAction:true, Authorized:true}
 	} else {
-		return Result{Confident:true,UserLevelAction:true, Authorized:false}
+		if userResource, ok := request.User.Resources[request.Resource]; ok {
+			if userResourceAction, ok := userResource.Actions[request.Action]; ok {
+				if userResourceAction.Authorized == false{
+					return Result{Confident:true,UserLevelAction:true, Authorized:false}
+				}
+			}
+		}
 	}
-	return Result{Confident:false,UserLevelAction:true,Authorized:false}
+	return unconfidentDeny
 }
 
 func isAuthorizedByRoleResourceActions(request Request) Result{
+	authorizingRoleActionExists := false
+	for _,userRole := range request.User.Roles {
+		roleResource := userRole.Resources[request.Resource];
+		if roleResource.Actions[request.Action].Authorized == false{
+				return Result{Confident:true,UserLevelAction:false, Authorized:false}
+			}
+
+			if roleResource.Actions[request.Action].Authorized == true{
+				authorizingRoleActionExists = true;
+			}
+	}
+	if authorizingRoleActionExists {
+		return Result{Confident:true,UserLevelAction:false, Authorized:true}
+	}
 	return unconfidentDeny
 }
 
@@ -69,7 +89,7 @@ func isAuthorizedByUserActions(request Request) Result{
 			}
 		}
 	}
-	return Result{Confident:false,UserLevelAction:true,Authorized:false}
+	return unconfidentDeny
 }
 
 
