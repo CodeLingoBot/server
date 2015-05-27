@@ -26,6 +26,16 @@ var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Autho
 //Is a user authorized to perform an action
 //User Actions are given priority over Role Actions
 func IsAuthorized(request Request) Result {
+	if request.Resource != `` {
+		if byUserResourceActions:= isAuthorizedByUserResourceActions(request); byUserResourceActions.Confident {
+			return byUserResourceActions
+		}
+
+		if byUserRoleResourceActions := isAuthorizedByRoleResourceActions(request); byUserRoleResourceActions.Confident {
+			return byUserRoleResourceActions
+		}
+	}
+
 	if byUserActions:= isAuthorizedByUserActions(request); byUserActions.Confident {
 		return byUserActions
 	}
@@ -33,6 +43,19 @@ func IsAuthorized(request Request) Result {
 	if byUserRoleActions := isAuthorizedByRoleActions(request); byUserRoleActions.Confident {
 		return byUserRoleActions
 	}
+	return unconfidentDeny
+}
+
+func isAuthorizedByUserResourceActions(request Request) Result{
+ 	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true{
+		return Result{Confident:true,UserLevelAction:true, Authorized:true}
+	} else {
+		return Result{Confident:true,UserLevelAction:true, Authorized:false}
+	}
+	return Result{Confident:false,UserLevelAction:true,Authorized:false}
+}
+
+func isAuthorizedByRoleResourceActions(request Request) Result{
 	return unconfidentDeny
 }
 
@@ -48,6 +71,7 @@ func isAuthorizedByUserActions(request Request) Result{
 	}
 	return Result{Confident:false,UserLevelAction:true,Authorized:false}
 }
+
 
 func isAuthorizedByRoleActions(request Request) Result{
 	authorizingRoleActionExists := false

@@ -136,7 +136,7 @@ func TestAllowingUserToPerformActionOnAResource(t *testing.T){
 	user :=user.User{}
 	user.AddResource(resource)
 	result := authorization.IsAuthorized(authorization.Request{User:user, Action:`edit`,Resource:`file`})
-	expectedResult := authorization.Result{true,false, true}
+	expectedResult := authorization.Result{true,true, true}
 	if result != expectedResult {
 		t.Error(`User was not authorize on an authorized resource`, result)
 	}
