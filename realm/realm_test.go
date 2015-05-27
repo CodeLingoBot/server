@@ -9,7 +9,7 @@ import (
 
 func TestAddingUsersAndRoles(t *testing.T) {
 	realm := realm.Realm{}
-	user := user.User{Id:`aaaaaaa`}
+	user := user.User{}
 	realm.AddUser(user)
 	if len(realm.Users) != 1 {
 		t.Error(`Adding an user twice didn't work as expected`, user.Actions)
