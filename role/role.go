@@ -1,8 +1,8 @@
 package role
 
 import (
-	"awethome.com/action"
-	"awethome.com/resource"
+	"awethome/server/action"
+	"awethome/server/resource"
 )
 
 type Role struct {

@@ -1,8 +1,8 @@
 package authorization
 
-import(
-	"awethome.com/user"
-	"awethome.com/action"
+import (
+	"awethome/server/user"
+	"awethome/server/action"
 )
 
 //Results of an authorization contain
@@ -10,24 +10,24 @@ import(
 //Whether the decision was made by looking at actions of the user as opposed to actions of her roles
 //Whether the user is authorized or not
 type Result struct {
-	Confident bool
+	Confident       bool
 	UserLevelAction bool
-	Authorized bool
+	Authorized      bool
 }
 
 type Request struct {
-	User user.User
-	Action string
+	User     user.User
+	Action   string
 	Resource string
 }
 
-var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Authorized:false}
+var unconfidentDeny Result = Result{Confident:false, UserLevelAction:false, Authorized:false}
 
 //Is a user authorized to perform an action
 //User Actions are given priority over Role Actions
 func IsAuthorized(request Request) Result {
 	if request.Resource != `` {
-		if byUserResourceActions:= isAuthorizedByUserResourceActions(request); byUserResourceActions.Confident {
+		if byUserResourceActions := isAuthorizedByUserResourceActions(request); byUserResourceActions.Confident {
 			return byUserResourceActions
 		}
 
@@ -36,7 +36,7 @@ func IsAuthorized(request Request) Result {
 		}
 	}
 
-	if byUserActions:= isAuthorizedByUserActions(request); byUserActions.Confident {
+	if byUserActions := isAuthorizedByUserActions(request); byUserActions.Confident {
 		return byUserActions
 	}
 
@@ -46,14 +46,14 @@ func IsAuthorized(request Request) Result {
 	return unconfidentDeny
 }
 
-func isAuthorizedByUserResourceActions(request Request) Result{
-	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true{
-		return Result{Confident:true,UserLevelAction:true, Authorized:true}
+func isAuthorizedByUserResourceActions(request Request) Result {
+	if request.User.Resources[request.Resource].Actions[request.Action].Authorized == true {
+		return Result{Confident:true, UserLevelAction:true, Authorized:true}
 	} else {
 		if userResource, ok := request.User.Resources[request.Resource]; ok {
 			if userResourceAction, ok := userResource.Actions[request.Action]; ok {
-				if userResourceAction.Authorized == false{
-					return Result{Confident:true,UserLevelAction:true, Authorized:false}
+				if userResourceAction.Authorized == false {
+					return Result{Confident:true, UserLevelAction:true, Authorized:false}
 				}
 			}
 		}
@@ -61,31 +61,31 @@ func isAuthorizedByUserResourceActions(request Request) Result{
 	return unconfidentDeny
 }
 
-func isAuthorizedByRoleResourceActions(request Request) Result{
+func isAuthorizedByRoleResourceActions(request Request) Result {
 	authorizingRoleActionExists := false
-	for _,userRole := range request.User.Roles {
+	for _, userRole := range request.User.Roles {
 		roleResource := userRole.Resources[request.Resource];
-		if roleResource.Actions[request.Action].Authorized == false{
-				return Result{Confident:true,UserLevelAction:false, Authorized:false}
-			}
+		if roleResource.Actions[request.Action].Authorized == false {
+			return Result{Confident:true, UserLevelAction:false, Authorized:false}
+		}
 
-			if roleResource.Actions[request.Action].Authorized == true{
-				authorizingRoleActionExists = true;
-			}
+		if roleResource.Actions[request.Action].Authorized == true {
+			authorizingRoleActionExists = true;
+		}
 	}
 	if authorizingRoleActionExists {
-		return Result{Confident:true,UserLevelAction:false, Authorized:true}
+		return Result{Confident:true, UserLevelAction:false, Authorized:true}
 	}
 	return unconfidentDeny
 }
 
-func isAuthorizedByUserActions(request Request) Result{
+func isAuthorizedByUserActions(request Request) Result {
 	for _, assignedAction := range request.User.Actions {
 		if assignedAction.Name == request.Action {
 			if assignedAction.Authorized == true {
-				return Result{Confident:true,UserLevelAction:true, Authorized:true}
-			}else{
-				return Result{Confident:true,UserLevelAction:true, Authorized:false}
+				return Result{Confident:true, UserLevelAction:true, Authorized:true}
+			}else {
+				return Result{Confident:true, UserLevelAction:true, Authorized:false}
 			}
 		}
 	}
@@ -93,11 +93,11 @@ func isAuthorizedByUserActions(request Request) Result{
 }
 
 
-func isAuthorizedByRoleActions(request Request) Result{
+func isAuthorizedByRoleActions(request Request) Result {
 	authorizingRoleActionExists := false
-	for _,userRole := range request.User.Roles {
+	for _, userRole := range request.User.Roles {
 		if searchActions(userRole.Actions, request.Action, false) == true {
-			return Result{Confident:true,UserLevelAction:false, Authorized:false}
+			return Result{Confident:true, UserLevelAction:false, Authorized:false}
 		}
 
 		if searchActions(userRole.Actions, request.Action, true) == true {
@@ -105,15 +105,15 @@ func isAuthorizedByRoleActions(request Request) Result{
 		}
 	}
 	if authorizingRoleActionExists {
-		return Result{Confident:true,UserLevelAction:false, Authorized:true}
+		return Result{Confident:true, UserLevelAction:false, Authorized:true}
 	}
 	return unconfidentDeny
 }
 
-func searchActions(actions map[string]action.Action, action string, authorized bool) bool{
+func searchActions(actions map[string]action.Action, action string, authorized bool) bool {
 	for _, assignedAction := range actions {
-		if assignedAction.Name == action && assignedAction.Authorized == authorized{
-				return true
+		if assignedAction.Name == action && assignedAction.Authorized == authorized {
+			return true
 		}
 	}
 	return false;

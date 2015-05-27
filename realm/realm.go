@@ -1,12 +1,12 @@
 package realm
 
-import(
-	"awethome.com/user"
-	"awethome.com/role"
+import (
+	"awethome/server/user"
+	"awethome/server/role"
 )
 
 type Realm struct {
-	Name string
+	Name  string
 	Users map[string]user.User
 	Roles map[string]role.Role
 }

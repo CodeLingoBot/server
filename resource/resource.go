@@ -1,7 +1,7 @@
 package resource
 
 import (
-	"awethome.com/action"
+	"awethome/server/action"
 )
 
 type Resource struct {

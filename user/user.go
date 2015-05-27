@@ -1,18 +1,18 @@
 package user
 
 import (
-	"awethome.com/action"
-	"awethome.com/role"
-	"awethome.com/resource"
+	"awethome/server/action"
+	"awethome/server/role"
+	"awethome/server/resource"
 )
 
 type User struct {
-	Id string
-	Secret string
+	Id         string
+	Secret     string
 	Attributes map[string]string
-	Actions map[string]action.Action
-	Roles map[string]role.Role
-	Resources map[string]resource.Resource
+	Actions    map[string]action.Action
+	Roles      map[string]role.Role
+	Resources  map[string]resource.Resource
 }
 
 func (user *User) AddAction(userAction action.Action) {

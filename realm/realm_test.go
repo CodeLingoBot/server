@@ -2,9 +2,9 @@ package realm_test
 
 import (
 	"testing"
-	"awethome.com/user"
-	"awethome.com/role"
-	"awethome.com/realm"
+	"awethome/server/user"
+	"awethome/server/role"
+	"awethome/server/realm"
 )
 
 func TestAddingUsersAndRoles(t *testing.T) {

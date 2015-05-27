@@ -2,16 +2,16 @@ package user_test
 
 import (
 	"testing"
-	"awethome.com/user"
-	"awethome.com/action"
-	"awethome.com/role"
-	"awethome.com/resource"
+	"awethome/server/user"
+	"awethome/server/action"
+	"awethome/server/role"
+	"awethome/server/resource"
 )
 
 func TestAddingActionsAndRolesResources(t *testing.T) {
 	user := user.User{}
-	allowAction := action.Action{Name:"dance",Authorized:true}
-	denyAction := action.Action{Name:"dance",Authorized:false}
+	allowAction := action.Action{Name:"dance", Authorized:true}
+	denyAction := action.Action{Name:"dance", Authorized:false}
 	user.AddAction(allowAction)
 	user.AddAction(denyAction)
 	if len(user.Actions) != 1 {
