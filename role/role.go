@@ -6,9 +6,12 @@ import (
 
 type Role struct {
 	Name string
-	Actions []action.Action
+	Actions map[string]action.Action
 }
 
-func (role *Role) AddAction(action action.Action) {
-	role.Actions = append(role.Actions, action)
+func (role *Role) AddAction(roleAction action.Action) {
+	if len(role.Actions) == 0 {
+		role.Actions = make(map[string]action.Action)
+	}
+	role.Actions[roleAction.Name] =  roleAction
 }

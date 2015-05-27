@@ -8,14 +8,20 @@ import (
 type User struct {
 	Attributes map[string]string
 	Secret string
-	Actions []action.Action
-	Roles []role.Role
+	Actions map[string]action.Action
+	Roles map[string]role.Role
 }
 
-func (user *User) AddAction(action action.Action) {
-	user.Actions = append(user.Actions, action)
+func (user *User) AddAction(userAction action.Action) {
+	if len(user.Actions) == 0 {
+		user.Actions = make(map[string]action.Action)
+	}
+	user.Actions[userAction.Name] =  userAction
 }
 
-func (user *User) AddRole(role role.Role) {
-	user.Roles = append(user.Roles, role)
+func (user *User) AddRole(userRole role.Role) {
+	if len(user.Roles) == 0 {
+		user.Roles = make(map[string]role.Role)
+	}
+	user.Roles[userRole.Name] =  userRole
 }

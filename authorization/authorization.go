@@ -60,7 +60,7 @@ func isAuthorizedByRoleActions(user user.User,action string) Result{
 	return unconfidentDeny
 }
 
-func searchActions(actions []action.Action, action string, authorized bool) bool{
+func searchActions(actions map[string]action.Action, action string, authorized bool) bool{
 	for _, assignedAction := range actions {
 		if assignedAction.Name == action && assignedAction.Authorized == authorized{
 				return true
