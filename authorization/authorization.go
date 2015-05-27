@@ -17,6 +17,8 @@ type Result struct {
 
 var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Authorized:false}
 
+//Is a user authorized to perform an action
+//User Actions are given priority over Role Actions
 func IsAuthorized(user user.User, action string) Result {
 	if byUserActions:= isAuthorizedByUserActions(user, action); byUserActions.Confident {
 		return byUserActions
@@ -58,9 +60,9 @@ func isAuthorizedByRoleActions(user user.User,action string) Result{
 	return unconfidentDeny
 }
 
-func searchActions(actions []action.Action, action string, expectedAuthorization bool) bool{
+func searchActions(actions []action.Action, action string, authorized bool) bool{
 	for _, assignedAction := range actions {
-		if assignedAction.Name == action && assignedAction.Authorized == expectedAuthorization{
+		if assignedAction.Name == action && assignedAction.Authorized == authorized{
 				return true
 		}
 	}
