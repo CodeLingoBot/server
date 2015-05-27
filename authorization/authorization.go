@@ -15,25 +15,31 @@ type Result struct {
 	Authorized bool
 }
 
+type Request struct {
+	User user.User
+	Action string
+	Resource string
+}
+
 var unconfidentDeny Result = Result{Confident:false,UserLevelAction:false, Authorized:false}
 
 //Is a user authorized to perform an action
 //User Actions are given priority over Role Actions
-func IsAuthorized(user user.User, action string) Result {
-	if byUserActions:= isAuthorizedByUserActions(user, action); byUserActions.Confident {
+func IsAuthorized(request Request) Result {
+	if byUserActions:= isAuthorizedByUserActions(request); byUserActions.Confident {
 		return byUserActions
 	}
 
-	if byUserRoleActions := isAuthorizedByRoleActions(user, action); byUserRoleActions.Confident {
+	if byUserRoleActions := isAuthorizedByRoleActions(request); byUserRoleActions.Confident {
 		return byUserRoleActions
 	}
 	return unconfidentDeny
 }
 
-func isAuthorizedByUserActions(user user.User, action string) Result{
-	for _, assignedAction := range user.Actions {
-		if assignedAction.Name == action {
-			if(assignedAction.Authorized == true) {
+func isAuthorizedByUserActions(request Request) Result{
+	for _, assignedAction := range request.User.Actions {
+		if assignedAction.Name == request.Action {
+			if assignedAction.Authorized == true {
 				return Result{Confident:true,UserLevelAction:true, Authorized:true}
 			}else{
 				return Result{Confident:true,UserLevelAction:true, Authorized:false}
@@ -43,14 +49,14 @@ func isAuthorizedByUserActions(user user.User, action string) Result{
 	return Result{Confident:false,UserLevelAction:true,Authorized:false}
 }
 
-func isAuthorizedByRoleActions(user user.User,action string) Result{
+func isAuthorizedByRoleActions(request Request) Result{
 	authorizingRoleActionExists := false
-	for _,userRole := range user.Roles {
-		if searchActions(userRole.Actions, action, false) == true {
+	for _,userRole := range request.User.Roles {
+		if searchActions(userRole.Actions, request.Action, false) == true {
 			return Result{Confident:true,UserLevelAction:false, Authorized:false}
 		}
 
-		if searchActions(userRole.Actions, action, true) == true {
+		if searchActions(userRole.Actions, request.Action, true) == true {
 			authorizingRoleActionExists = true;
 		}
 	}

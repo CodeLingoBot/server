@@ -3,14 +3,16 @@ package user
 import (
 	"awethome.com/action"
 	"awethome.com/role"
+	"awethome.com/resource"
 )
 
 type User struct {
 	Id string
-	Attributes map[string]string
 	Secret string
+	Attributes map[string]string
 	Actions map[string]action.Action
 	Roles map[string]role.Role
+	Resources map[string]resource.Resource
 }
 
 func (user *User) AddAction(userAction action.Action) {
@@ -25,4 +27,11 @@ func (user *User) AddRole(userRole role.Role) {
 		user.Roles = make(map[string]role.Role)
 	}
 	user.Roles[userRole.Name] =  userRole
+}
+
+func (user *User) AddResource(userResource resource.Resource) {
+	if len(user.Resources) == 0 {
+		user.Resources = make(map[string]resource.Resource)
+	}
+	user.Resources[userResource.Name] =  userResource
 }
