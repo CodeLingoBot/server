@@ -6,7 +6,8 @@ import (
 )
 
 type User struct {
-	FullName string
+	Attributes map[string]string
+	Secret string
 	Actions []action.Action
 	Roles []role.Role
 }
