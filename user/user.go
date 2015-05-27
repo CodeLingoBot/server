@@ -6,6 +6,7 @@ import (
 )
 
 type User struct {
+	Id string
 	Attributes map[string]string
 	Secret string
 	Actions map[string]action.Action
