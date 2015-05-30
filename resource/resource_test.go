@@ -2,8 +2,8 @@ package resource_test
 
 import (
 	"testing"
-	"awethome/server/action"
-	"awethome/server/resource"
+	"github.com/awethome/server/action"
+	"github.com/awethome/server/resource"
 )
 
 func TestAddingActions(t *testing.T) {

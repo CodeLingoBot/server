@@ -2,10 +2,10 @@ package user_test
 
 import (
 	"testing"
-	"awethome/server/user"
-	"awethome/server/action"
-	"awethome/server/role"
-	"awethome/server/resource"
+	"github.com/awethome/server/user"
+	"github.com/awethome/server/action"
+	"github.com/awethome/server/role"
+	"github.com/awethome/server/resource"
 )
 
 func TestAddingActionsAndRolesResources(t *testing.T) {

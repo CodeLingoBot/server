@@ -1,8 +1,8 @@
 package authorization
 
 import (
-	"awethome/server/user"
-	"awethome/server/action"
+	"github.com/awethome/server/user"
+	"github.com/awethome/server/action"
 )
 
 //Results of an authorization contain

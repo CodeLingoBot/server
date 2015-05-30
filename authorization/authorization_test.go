@@ -2,11 +2,11 @@ package authorization_test
 
 import (
 	"testing"
-	"awethome/server/authorization"
-	"awethome/server/user"
-	"awethome/server/action"
-	"awethome/server/role"
-	"awethome/server/resource"
+	"github.com/awethome/server/authorization"
+	"github.com/awethome/server/user"
+	"github.com/awethome/server/action"
+	"github.com/awethome/server/role"
+	"github.com/awethome/server/resource"
 )
 
 func TestAllowAuthorizeOnUserAction(t *testing.T) {

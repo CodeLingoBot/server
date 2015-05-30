@@ -1,9 +1,9 @@
 package user
 
 import (
-	"awethome/server/action"
-	"awethome/server/role"
-	"awethome/server/resource"
+	"github.com/awethome/server/action"
+	"github.com/awethome/server/role"
+	"github.com/awethome/server/resource"
 )
 
 type User struct {
