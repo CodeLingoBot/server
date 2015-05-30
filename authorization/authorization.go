@@ -83,11 +83,11 @@ func isAuthorizedByRoleResourceActions(request Request) Result {
 
 //Is user authorized to perform an action based on User Actions?
 func isAuthorizedByUserActions(request Request) Result {
-	for _, assignedAction := range request.User.Actions {
-		if assignedAction.Name == request.Action {
-			if assignedAction.Authorized == true {
-				return Result{Confident:true, UserLevelAction:true, Authorized:true}
-			}else {
+	if request.User.Actions[request.Action].Authorized == true {
+		return Result{Confident:true, UserLevelAction:true, Authorized:true}
+	}else{
+		if userAction, ok := request.User.Actions[request.Action]; ok {
+			if(userAction.Authorized == false){
 				return Result{Confident:true, UserLevelAction:true, Authorized:false}
 			}
 		}
