@@ -9,5 +9,5 @@ install:
   - go get github.com/golang/lint/golint
 
 script:
-    - $HOME/gopath/src/github.com/awethome/server/test_coverage.sh
-    - goveralls -coverprofile=$HOME/gopath/src/github.com/awethome/server/profile.cov -service=travis-ci
+    - $GOPATH/src/github.com/awethome/server/test_coverage.sh
+    - goveralls -coverprofile=$GOPATH/src/github.com/awethome/server/profile.cov -service=travis-ci

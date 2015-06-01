@@ -34,4 +34,4 @@ fi
 done
 
 # Save coverage details in profile.cov
-go tool cover -func $HOME/gopath/src/github.com/awethome/server/profile.cov
+go tool cover -func $GOPATH/src/github.com/awethome/server/profile.cov
