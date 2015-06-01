@@ -117,9 +117,9 @@ func searchActions(actions map[string]action.Action, action string, authorized b
 
 	if userAction, ok := actions[action]; ok {
 		if userAction.Authorized == authorized {
-			return true;
+			return true
 		}
 	}
-	
+
 	return false
 }
