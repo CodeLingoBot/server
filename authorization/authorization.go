@@ -114,10 +114,12 @@ func isAuthorizedByRoleActions(request Request) Result {
 }
 
 func searchActions(actions map[string]action.Action, action string, authorized bool) bool {
-	for _, assignedAction := range actions {
-		if assignedAction.Name == action && assignedAction.Authorized == authorized {
-			return true
+
+	if userAction, ok := actions[action]; ok {
+		if userAction.Authorized == authorized {
+			return true;
 		}
 	}
+	
 	return false
 }
