@@ -2,8 +2,8 @@ package user
 
 import (
 	"github.com/awethome/server/action"
-	"github.com/awethome/server/role"
 	"github.com/awethome/server/resource"
+	"github.com/awethome/server/role"
 )
 
 type User struct {
@@ -19,19 +19,19 @@ func (user *User) AddAction(userAction action.Action) {
 	if len(user.Actions) == 0 {
 		user.Actions = make(map[string]action.Action)
 	}
-	user.Actions[userAction.Name] =  userAction
+	user.Actions[userAction.Name] = userAction
 }
 
 func (user *User) AddRole(userRole role.Role) {
 	if len(user.Roles) == 0 {
 		user.Roles = make(map[string]role.Role)
 	}
-	user.Roles[userRole.Name] =  userRole
+	user.Roles[userRole.Name] = userRole
 }
 
 func (user *User) AddResource(userResource resource.Resource) {
 	if len(user.Resources) == 0 {
 		user.Resources = make(map[string]resource.Resource)
 	}
-	user.Resources[userResource.Name] =  userResource
+	user.Resources[userResource.Name] = userResource
 }

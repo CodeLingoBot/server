@@ -2,6 +2,9 @@
 .idea/
 server.iml
 
+# Test coverage
+profile.cov
+
 # Compiled source #
 ###################
 *.com

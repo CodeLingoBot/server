@@ -1,8 +1,8 @@
 package realm
 
 import (
-	"github.com/awethome/server/user"
 	"github.com/awethome/server/role"
+	"github.com/awethome/server/user"
 )
 
 type Realm struct {
@@ -15,12 +15,12 @@ func (realm *Realm) AddUser(realmUser user.User) {
 	if len(realm.Users) == 0 {
 		realm.Users = make(map[string]user.User)
 	}
-	realm.Users[realmUser.Id] =  realmUser
+	realm.Users[realmUser.Id] = realmUser
 }
 
 func (realm *Realm) AddRole(userRole role.Role) {
 	if len(realm.Roles) == 0 {
 		realm.Roles = make(map[string]role.Role)
 	}
-	realm.Roles[userRole.Name] =  userRole
+	realm.Roles[userRole.Name] = userRole
 }

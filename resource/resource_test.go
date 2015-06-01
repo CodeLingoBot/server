@@ -2,14 +2,15 @@ package resource_test
 
 import (
 	"testing"
+
 	"github.com/awethome/server/action"
 	"github.com/awethome/server/resource"
 )
 
 func TestAddingActions(t *testing.T) {
 	role := resource.Resource{}
-	allowAction := action.Action{Name:"dance", Authorized:true}
-	denyAction := action.Action{Name:"dance", Authorized:false}
+	allowAction := action.Action{Name: "dance", Authorized: true}
+	denyAction := action.Action{Name: "dance", Authorized: false}
 	role.AddAction(allowAction)
 	role.AddAction(denyAction)
 	if len(role.Actions) != 1 {
