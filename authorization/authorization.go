@@ -21,6 +21,8 @@ type Request struct {
 	Resource string
 }
 
+//An unconfident Deny occurs when we deny not because the user is really denied but because we can not
+//Find a reason to allow the user, and we default to deny
 var unconfidentDeny Result = Result{Confident: false, UserLevelAction: false, Authorized: false}
 
 //Is a user authorized to perform an action
@@ -67,8 +69,11 @@ func isAuthorizedByRoleResourceActions(request Request) Result {
 	authorizingRoleActionExists := false
 	for _, userRole := range request.User.Roles {
 		roleResource := userRole.Resources[request.Resource]
-		if roleResource.Actions[request.Action].Authorized == false {
-			return Result{Confident: true, UserLevelAction: false, Authorized: false}
+
+		if roleAction, ok := roleResource.Actions[request.Action]; ok {
+			if roleAction.Authorized == false {
+				return Result{Confident: true, UserLevelAction: false, Authorized: false}
+			}
 		}
 
 		if roleResource.Actions[request.Action].Authorized == true {

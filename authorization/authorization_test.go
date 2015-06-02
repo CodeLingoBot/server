@@ -149,6 +149,19 @@ func TestUserToPerformActionOnAResource(t *testing.T) {
 	}
 }
 
+func TestUnconfidentDenyByRoleResourceActions(t *testing.T) {
+	user := user.User{}
+	role := role.Role{}
+	resource := resource.Resource{Name: `file`}
+	role.AddResource(resource)
+	user.AddRole(role)
+	result := authorization.IsAuthorized(authorization.Request{User: user, Action: `edit`, Resource: `directory`})
+	expectedResult := authorization.Result{Confident: false, UserLevelAction: false, Authorized: false}
+	if result != expectedResult {
+		t.Error(`User was authorized on an role level unassigned resource`, result)
+	}
+}
+
 func TestAllowingRoleToPerformActionOnAResource(t *testing.T) {
 	user := user.User{}
 	role := role.Role{}
