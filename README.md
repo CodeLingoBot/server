@@ -5,6 +5,10 @@ Awethome Project
 
 Awethome is a free and open source authentication/authorization server with an HTTP RESTful interface.
 
+Run in a docker container
+ docker build -t awethome/server .
+ docker run -t awethome/server
+
 Concepts
  * Realm
  * User
