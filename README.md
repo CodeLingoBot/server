@@ -16,7 +16,6 @@ Awethome is a free and open source authentication/authorization server with an H
  * Realm
  * User
  * Role
- * Resource
  * Action
 
 ## LICENSE
