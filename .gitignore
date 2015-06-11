@@ -5,6 +5,9 @@ server.iml
 # Test coverage
 profile.cov
 
+# Swagger ui
+rest/swagger/*
+
 # Compiled source #
 ###################
 *.com
