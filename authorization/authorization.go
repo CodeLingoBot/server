@@ -25,7 +25,7 @@ type Request struct {
 //Find a reason to allow the user, and we default to deny
 var unconfidentDeny Result = Result{Confident: false, UserLevelAction: false, Authorized: false}
 
-//Is a user authorized to perform an action
+//IsAuthorized Is a user authorized to perform an action
 //User Actions are given priority over Role Actions
 func IsAuthorized(request Request) Result {
 	if request.Resource != `` {
